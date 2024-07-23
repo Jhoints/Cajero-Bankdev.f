@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cajero Automático</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cajero-container">
+        <h2>Bienvenido al Cajero Automático de</h2>
+        <br>
+        <h1>bankdev.f</h1>
+        <div id="userInfo">
+            <!-- Aquí se mostrará el nombre del usuario -->
+        </div>
+        <div id="saldoInfo">
+            <!-- Aquí se mostrará el saldo actual -->
+        </div>
+        <form id="retiroForm">
+            <div class="form-group">
+                <label for="amount">Monto a Retirar</label>
+                <input type="number" id="amount" name="amount" required>
+            </div>
+            <button type="submit">Retirar</button>
+        </form>
+        <form id="depositoForm">
+            <div class="form-group">
+                <label for="depositAmount">Monto a Depositar</label>
+                <input type="number" id="depositAmount" name="depositAmount" required>
+            </div>
+            <button type="submit">Depositar</button>
+        </form>
+        <button id="cerrarSesionBtn">Cerrar Sesión</button>
+        <p id="transactionStatus"></p>
+    </div>
+
+    <script>
+        var loggedInUser = sessionStorage.getItem('loggedInUser');
+        var saldo = parseFloat(sessionStorage.getItem('saldo')); // Convertimos a float para operaciones
+
+        var userInfoDiv = document.getElementById('userInfo');
+        userInfoDiv.textContent = 'Usuario: ' + loggedInUser;
+        
+        var saldoInfoDiv = document.getElementById('saldoInfo');
+        saldoInfoDiv.textContent = 'Saldo actual: $' + saldo.toFixed(2); // Mostramos saldo con dos decimales
+
+        var retiroForm = document.getElementById('retiroForm');
+        var depositoForm = document.getElementById('depositoForm');
+        var transactionStatus = document.getElementById('transactionStatus');
+        var cerrarSesionBtn = document.getElementById('cerrarSesionBtn');
+
+        retiroForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var amount = parseFloat(document.getElementById('amount').value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                transactionStatus.textContent = 'Por favor ingresa un monto válido para retirar.';
+                return;
+            }
+
+            if (amount > saldo) {
+                transactionStatus.textContent = 'No tienes suficiente saldo para realizar este retiro.';
+            } else {
+                saldo -= amount;
+                sessionStorage.setItem('saldo', saldo.toString());
+                saldoInfoDiv.textContent = 'Saldo actual: $' + saldo.toFixed(2);
+                transactionStatus.textContent = 'Retiro exitoso. Nuevo saldo: $' + saldo.toFixed(2);
+            }
+        });
+
+        depositoForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var depositAmount = parseFloat(document.getElementById('depositAmount').value);
+            
+            if (isNaN(depositAmount) || depositAmount <= 0) {
+                transactionStatus.textContent = 'Por favor ingresa un monto válido para depositar.';
+                return;
+            }
+
+            var nuevoSaldo = saldo + depositAmount;
+
+            // Verificamos las condiciones de límite para el saldo
+            if (nuevoSaldo > 990 || nuevoSaldo < 10) {
+                transactionStatus.textContent = 'El saldo no puede ser superior a 990 ni inferior a 10.';
+            } else {
+                saldo = nuevoSaldo;
+                sessionStorage.setItem('saldo', saldo.toString());
+                saldoInfoDiv.textContent = 'Saldo actual: $' + saldo.toFixed(2);
+                transactionStatus.textContent = 'Depósito exitoso. Nuevo saldo: $' + saldo.toFixed(2);
+            }
+        });
+
+        cerrarSesionBtn.addEventListener('click', function() {
+            // Limpiamos la información de sesión y redirigimos a la página de inicio de sesión
+            sessionStorage.removeItem('loggedInUser');
+            sessionStorage.removeItem('saldo');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
