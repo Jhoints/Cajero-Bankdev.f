@@ -14,6 +14,26 @@ var users = {
     'sol': {
         password: 'nakagawa',
         saldo: 300
+    },
+    'Sebastian': {
+        password: 'Ramirez',
+        saldo: 450
+    },
+    'Oscar': {
+        password: 'Nolastname',
+        saldo: 200
+    },
+    'Chuy': {
+        password: 'Gaucin',
+        saldo: 670
+    },
+    'Daniel': {
+        password: 'Ordaz',
+        saldo: 290
+    },
+    'Tonatiuh': {
+        password: 'Bayardo',
+        saldo: 70
     }
 };
 
